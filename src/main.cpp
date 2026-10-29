@@ -1,7 +1,6 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
-
 #include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
 
@@ -35,6 +34,27 @@ int main(int argc, char* argv[]) {
         {"model", "anthropic/claude-haiku-4.5"},
         {"messages", json::array({
             {{"role", "user"}, {"content", prompt}}
+            // Step 2 starts here
+             })},
+        {"tools", json::array({
+            {
+                {"type", "function"},
+                {"function", {
+                    {"name", "Read"},
+                    {"description", "Read and return the contents of a file"},
+                    {"parameters", {
+                        {"type", "object"},
+                        {"properties", {
+                            {"file_path", {
+                                {"type", "string"},
+                                {"description", "The path to the file to read"}
+                            }}
+                        }},
+                        {"required", json::array({"file_path"})}
+                    }}
+                }}
+            }
+            //step 2 ends here
         })}
     };
 
