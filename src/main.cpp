@@ -145,7 +145,7 @@ int main(int argc, char* argv[]) {
                         {"tool_call_id", tc["id"].get<std::string>()},
                         {"content", buf.str()}
                     });
-                }
+                
             }
         
         else if (tc["function"]["name"].get<std::string>() == "Write") {
