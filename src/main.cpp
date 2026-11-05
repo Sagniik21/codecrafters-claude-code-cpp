@@ -147,7 +147,7 @@ int main(int argc, char* argv[]) {
                     });
                 }
             }
-        }
+        
         else if (tc["function"]["name"].get<std::string>() == "Write") {
                     json args = json::parse(tc["function"]["arguments"].get<std::string>());
                     std::ofstream file(args["file_path"].get<std::string>());
@@ -160,7 +160,10 @@ int main(int argc, char* argv[]) {
                         {"content", "Successfully wrote to file"}
                     });
                 }
-        else {
+            }
+       
+       
+             }     else {
             if (msg.contains("content") && !msg["content"].is_null()) {
                 std::cout << msg["content"].get<std::string>();
             }
