@@ -1,5 +1,7 @@
 #include <cstdlib>
+#include<fstream>
 #include <iostream>
+#include<sstream>
 #include <string>
 #include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
@@ -80,10 +82,27 @@ int main(int argc, char* argv[]) {
     }
 
     // You can use print statements as follows for debugging, they'll be visible when running tests.
-    std::cerr << "Logs from your program will appear here!" << std::endl;
+   // std::cerr << "Logs from your program will appear here!" << std::endl;
 
     // TODO: Uncomment the line below to pass the first stage
-     std::cout << result["choices"][0]["message"]["content"].get<std::string>();
+   //  std::cout << result["choices"][0]["message"]["content"].get<std::string>();
+
+  //  return 0;
+  json msg = result["choices"][0]["message"];
+
+    if (msg.contains("tool_calls") && !msg["tool_calls"].empty()) {
+        json tc = msg["tool_calls"][0];
+        if (tc["function"]["name"].get<std::string>() == "Read") {
+            json args = json::parse(tc["function"]["arguments"].get<std::string>());
+            std::ifstream file(args["file_path"].get<std::string>());
+            std::stringstream buf;
+            buf << file.rdbuf();
+            std::cout << buf.str();
+        }
+    } else if (msg.contains("content") && !msg["content"].is_null()) {
+        std::cout << msg["content"].get<std::string>();
+    }
 
     return 0;
 }
+
