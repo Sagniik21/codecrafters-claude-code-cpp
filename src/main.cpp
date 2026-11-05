@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
                         }},
                         {"required", json::array({"file_path"})}
                     }}
-                }
+                }}
             },
             {
                 //Advertising write tool
@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
             }}
         }}
             }
-            }
+            
             
         })}
     };
