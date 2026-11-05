@@ -54,9 +54,32 @@ int main(int argc, char* argv[]) {
                         }},
                         {"required", json::array({"file_path"})}
                     }}
+                }
+            },
+            {
+                //Advertising write tool
+                {"type", "function"},
+        {"function", {
+            {"name", "Write"},
+            {"description", "Write content to a file"},
+            {"parameters", {
+                {"type", "object"},
+                {"required", json::array({"file_path", "content"})},
+                {"properties", {
+                    {"file_path", {
+                        {"type", "string"},
+                        {"description", "The path of the file to write to"}
+                    }},
+                    {"content", {
+                        {"type", "string"},
+                        {"description", "The content to write to the file"}
+                    }}
                 }}
+            }}
+        }}
             }
-            //step 2 ends here
+            }
+            
         })}
     };
    while (true) {
@@ -124,7 +147,20 @@ int main(int argc, char* argv[]) {
                     });
                 }
             }
-        } else {
+        }
+        else if (tc["function"]["name"].get<std::string>() == "Write") {
+                    json args = json::parse(tc["function"]["arguments"].get<std::string>());
+                    std::ofstream file(args["file_path"].get<std::string>());
+                    file << args["content"].get<std::string>();
+                    file.close();
+
+                    request_body["messages"].push_back({
+                        {"role", "tool"},
+                        {"tool_call_id", tc["id"].get<std::string>()},
+                        {"content", "Successfully wrote to file"}
+                    });
+                }
+        else {
             if (msg.contains("content") && !msg["content"].is_null()) {
                 std::cout << msg["content"].get<std::string>();
             }
