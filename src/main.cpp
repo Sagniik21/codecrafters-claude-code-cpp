@@ -1,3 +1,4 @@
+#include<cstdio>
 #include <cstdlib>
 #include<fstream>
 #include <iostream>
@@ -77,6 +78,25 @@ int main(int argc, char* argv[]) {
                 }}
             }}
         }}
+            },
+
+            //Advertising the bash tool
+            {
+                {"type", "function"},
+                {"function", {
+                    {"name", "Bash"},
+                    {"description", "Execute a bash command and return the output"},
+                    {"parameters", {
+                        {"type", "object"},
+                        {"required", json::array({"command"})},
+                        {"properties", {
+                            {"command", {
+                                {"type", "string"},
+                                {"description", "The bash command to execute"}
+                            }}
+                        }}
+                    }}
+                }}
             }
             
             
@@ -161,6 +181,29 @@ int main(int argc, char* argv[]) {
                     });
                 }
             }
+            //Integrating advertisement for bash tool
+            else if (tc["function"]["name"].get<std::string>() == "Bash") {
+                json args = json::parse(tc["function"]["arguments"].get<std::string>());
+                std::string command = args["command"].get<std::string>();
+                std::string output;
+
+                // Execute the bash command and capture the output
+                FILE* pipe = popen(command.c_str(), "r");
+                if (!pipe) {
+                    output = "Failed to execute command";
+                } else {
+                    char buffer[128];
+                    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+                        output += buffer;
+                    }
+                    pclose(pipe);
+                }
+
+                request_body["messages"].push_back({
+                    {"role", "tool"},
+                    {"tool_call_id", tc["id"].get<std::string>()},
+                    {"content", output}
+                });
        
        
              }     else {
