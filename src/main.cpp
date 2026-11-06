@@ -179,7 +179,7 @@ int main(int argc, char* argv[]) {
                         {"tool_call_id", tc["id"].get<std::string>()},
                         {"content", "Successfully wrote to file"}
                     });
-                }
+                
             }
             //Integrating advertisement for bash tool
             else if (tc["function"]["name"].get<std::string>() == "Bash") {
