@@ -204,7 +204,8 @@ int main(int argc, char* argv[]) {
                     {"tool_call_id", tc["id"].get<std::string>()},
                     {"content", output}
                 });
-       
+            }
+        }
        
              }     else {
             if (msg.contains("content") && !msg["content"].is_null()) {
