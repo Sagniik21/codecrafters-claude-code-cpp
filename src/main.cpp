@@ -21,6 +21,32 @@ int main(int argc, char* argv[]) {
         std::cerr << "Prompt must not be empty" << std::endl;
         return 1;
     }
+    //Invoking skill by name if the prompt starts with a slash
+    if(prompt[0]== '/'){
+        size_t space_pos = prompt.find(' ');
+        std::string skill_name = (space_pos == std::string::npos)
+            ? prompt.substr(1)
+            : prompt.substr(1, space_pos - 1);
+
+        std::ifstream skill_file(".claude/skills/" + skill_name + "/SKILL.md");
+        if (skill_file.is_open()) {
+            std::stringstream buf;
+            buf << skill_file.rdbuf();
+            std::string content = buf.str();
+            size_t first_sep = content.find("---");
+            if (first_sep != std::string::npos) {
+                size_t second_sep = content.find("---", first_sep + 3);
+                if (second_sep != std::string::npos) {
+                    std::string body = content.substr(second_sep + 3);
+                    size_t start = body.find_first_not_of(" \t\r\n");
+                    size_t end = body.find_last_not_of(" \t\r\n");
+                    if (start != std::string::npos) {
+                        prompt = body.substr(start, end - start + 1);
+                    }
+                }
+            }
+        }
+    }
 
     const char* api_key_env = std::getenv("OPENROUTER_API_KEY");
     const char* base_url_env = std::getenv("OPENROUTER_BASE_URL");
